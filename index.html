@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Availability Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Availability</h1>
+    <p>Status: <span id="availability">Not Available</span></p>
+    <button id="toggleButton">Toggle Availability</button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const statusElement = document.getElementById('availability');
+      const toggleButton = document.getElementById('toggleButton');
+
+      let available = false;
+
+      // Function to update availability status
+      const updateAvailability = () => {
+        statusElement.textContent = available ? 'Available' : 'Not Available';
+        // Call function to send webhook with availability status
+        sendWebhook(available);
+      };
+
+      // Function to send webhook with availability status
+      const sendWebhook = (availability) => {
+        // Create a new XMLHttpRequest object
+        const xhr = new XMLHttpRequest();
+        // Define the request method and URL
+        xhr.open('POST', 'https://hooks.zapier.com/hooks/catch/3742777/3jr2v2q/', true);
+        // Set the Content-Type header
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        // Define the payload
+        const payload = { available: availability };
+        // Convert payload to JSON format
+        const jsonData = JSON.stringify(payload);
+        // Send the request with the payload
+        xhr.send(jsonData);
+      };
+
+      // Event listener for button click
+      toggleButton.addEventListener('click', function() {
+        available = !available;
+        updateAvailability();
+      });
+
+      // Initial setup
+      updateAvailability();
+    });
+  </script>
+</body>
+</html>
